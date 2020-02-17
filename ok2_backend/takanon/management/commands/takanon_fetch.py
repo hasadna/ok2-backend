@@ -194,7 +194,13 @@ class Command(BaseCommand):
             help='Save source WikiText in the current working directory')
 
     def handle(self, *args, **kwargs):
-        takanon_source = self._fetch_takanon_wikitext(kwargs['save_sources'])
+        takanon_source = self._fetch_takanon_wikitext()
+        if kwargs['save_sources']:
+            source_file = 'takanon.wiki'
+
+            self.stdout.write(f"Saving WikiText into {source_file}")
+            with open(source_file, 'w', encoding='utf-8') as f:
+                f.write(takanon_source)
 
         parser = TakanonWikiParser(self.stdout, takanon_source)
 
@@ -234,7 +240,7 @@ class Command(BaseCommand):
                 }
             )
 
-    def _fetch_takanon_wikitext(self, save_sources: bool) -> str:
+    def _fetch_takanon_wikitext(self) -> str:
         self.stdout.write('Fetching Takanon WikiCode')
 
         params = {
@@ -251,13 +257,6 @@ class Command(BaseCommand):
         with urllib.request.urlopen(url) as response:
             self.stdout.write(f'Return code: {response.getcode()}')
             response_body = response.read()
-
-            if save_sources:
-                source_file = 'takanon.wiki'
-
-                self.stdout.write(f"Saving WikiText into {source_file}")
-                with open(source_file, 'wb') as f:
-                    f.write(response_body)
 
             try:
                 response_data = json.loads(response_body)
