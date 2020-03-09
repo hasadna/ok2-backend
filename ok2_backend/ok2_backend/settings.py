@@ -33,13 +33,13 @@ INSTALLED_APPS = [
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
-    'common.ok2_middleware.OkMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'common.ok2_middleware.OkMiddleware',
 ]
 
 ROOT_URLCONF = 'ok2_backend.urls'
@@ -112,4 +112,4 @@ USE_TZ = True
 
 STATIC_URL = '/static/'
 
-SESSION_ENGINE = 'common.jwt_cookie'
+# SESSION_ENGINE = 'common.jwt_cookie'
