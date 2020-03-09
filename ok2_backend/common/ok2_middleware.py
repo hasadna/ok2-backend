@@ -3,12 +3,7 @@ import os
 from django.utils.functional import SimpleLazyObject
 from django.contrib.auth.models import User, AnonymousUser
 
-import jwt
-
-
-def get_token(request):
-    if 'authentication' in request.headers:
-        return jwt.decode(request.headers['authentication'], os.environ['JWT_SECRET'])
+from common.utils import get_token
 
 
 def get_user(request):
@@ -24,7 +19,8 @@ class OkMiddleware:
 
     def __call__(self, request, *args, **kwargs):
         # do the job of working with jwt, happens before the view is called
-        # request.user = get_user(request)
+        if not request.user:
+            request.user = get_user(request)
 
         response = self.get_response(request)
         if request.user.is_anonymous:
