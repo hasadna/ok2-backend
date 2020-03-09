@@ -19,7 +19,8 @@ class OkMiddleware:
 
     def __call__(self, request, *args, **kwargs):
         # do the job of working with jwt, happens before the view is called
-        if not request.user:
+        authorization = request.headers.get('Authorization')
+        if authorization:
             request.user = get_user(request)
 
         response = self.get_response(request)
