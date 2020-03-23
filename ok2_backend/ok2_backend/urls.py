@@ -14,12 +14,15 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path
+from django.urls import include, path
 
 from one_minute_speeches.views import check
 from accounts.views import login
 
-urlpatterns = [
-    path('admin/', admin.site.urls),
-    path('login/', login),
+api_patterns = [
+    path('/admin', admin.site.urls),
+    path('/login', login),
     path('', check),
 ]
+
+urlpatterns = [path('api', include(api_patterns))]
