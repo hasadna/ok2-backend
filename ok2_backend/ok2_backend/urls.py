@@ -16,9 +16,11 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path
 
-from one_minute_speeches.views import Tool
+from one_minute_speeches.views import check
+from accounts.views import login
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('tool/', Tool.as_view()),
+    path('login/', login),
+    path('', check),
 ]
