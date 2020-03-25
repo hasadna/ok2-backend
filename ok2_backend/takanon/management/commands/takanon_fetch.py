@@ -2,13 +2,14 @@ from django.core.management.base import BaseCommand
 
 import mwparserfromhell as mwp
 
-import urllib.request
-import urllib.parse
+import requests
 import typing
 import json
 import re
 
 from takanon.models import Clause, ClauseVersion, Section, Chapter
+
+WIKISOURCE_API_URL = 'https://he.wikisource.org/w/api.php'
 
 
 class TakanonWikiParser:
@@ -299,44 +300,42 @@ class Command(BaseCommand):
     def _fetch_takanon_revisions(self) -> typing.List[str]:
         self.stdout.write('Fetching all Takanon revisions from WikiSource')
 
-        url = self._get_wikisource_url({
+        params = self._get_wikisource_params({
             'rvlimit': 'max',
             'rvprop': 'ids',
         })
 
-        with urllib.request.urlopen(url) as response:
-            self.stdout.write(f'Return code: {response.getcode()}')
-            response_body = response.read()
+        response = requests.get(WIKISOURCE_API_URL, params)
+        self.stdout.write(f'Status code: {response.status_code}')
 
-            try:
-                response_data = json.loads(response_body)
-                revision_elems = response_data['query']['pages'][0]['revisions']
+        try:
+            response_data = response.json()
+            revision_elems = response_data['query']['pages'][0]['revisions']
 
-                return [r['revid'] for r in revision_elems][::-1]
-            except (ValueError, KeyError) as e:
-                self.stderr.write(f'Failed extracting revision list from response: {repr(e)}')
+            return [r['revid'] for r in revision_elems][::-1]
+        except (ValueError, KeyError) as e:
+            self.stderr.write(f'Failed extracting revision list from response: {repr(e)}')
 
     def _fetch_takanon_wikitext(self, revid: str) -> str:
         self.stdout.write('Fetching Takanon WikiCode')
 
-        url = self._get_wikisource_url({
+        params = self._get_wikisource_params({
             'rvprop': 'content',
             'rvslots': 'main',
             'rvstartid': revid,
             'rvlimit': 1
         })
 
-        with urllib.request.urlopen(url) as response:
-            self.stdout.write(f'Return code: {response.getcode()}')
-            response_body = response.read()
+        response = requests.get(WIKISOURCE_API_URL, params)
+        self.stdout.write(f'Status code: {response.status_code}')
 
-            try:
-                response_data = json.loads(response_body)
-                return response_data['query']['pages'][0]['revisions'][0]['slots']['main']['content']
-            except (ValueError, KeyError) as e:
-                self.stderr.write(f'Failed extracting WikiText from response: {repr(e)}')
+        try:
+            response_data = response.json()
+            return response_data['query']['pages'][0]['revisions'][0]['slots']['main']['content']
+        except (ValueError, KeyError) as e:
+            self.stderr.write(f'Failed extracting WikiText from response: {repr(e)}')
 
-    def _get_wikisource_url(self, extra_params: typing.Dict[str, typing.Any]) -> str:
+    def _get_wikisource_params(self, extra_params: typing.Dict[str, typing.Any]) -> typing.Dict[str, typing.Any]:
         params = {
             'format': 'json',
             'formatversion': 2,
@@ -345,5 +344,4 @@ class Command(BaseCommand):
             'titles': 'תקנון_הכנסת'
         }
         params.update(extra_params)
-
-        return 'https://he.wikisource.org/w/api.php?' + urllib.parse.urlencode(params)
+        return params
