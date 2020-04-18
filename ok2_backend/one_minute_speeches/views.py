@@ -2,6 +2,6 @@ from django.http import HttpResponse
 from django.shortcuts import render
 
 
-def check(request):
+def one_minute_speeches(request):
     print(request.user)
-    return HttpResponse('it works')
+    return HttpResponse('one minute speech')

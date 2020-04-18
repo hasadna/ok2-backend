@@ -13,7 +13,7 @@ SECRET_KEY = 'd%_dhqdserzd485_72vh*0y+ywf&^583d!bt41(63tgme=w2&h'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['*']
 
 
 # Application definition
@@ -26,9 +26,11 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'common',
+    'rest_framework',
     'parliament_tools',
     'one_minute_speeches',
-    'takanon'
+    'takanon',
+    'accounts'
 ]
 
 MIDDLEWARE = [
