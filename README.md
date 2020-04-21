@@ -11,6 +11,7 @@ Also in the [frontend repo](https://github.com/hasadna/ok2-frontend)
 1. Run in the ok2-backend folder:
 - ````pip install -r requirements.txt```` (only once after pull)
 - ````manage.py migrate```` to install database (only once after pull)
+- ````python manage.py makemigrations```` to install database (only once after pull)
 - ````manage.py runserver```` (to run localhost 8000 as)
 
 ###
