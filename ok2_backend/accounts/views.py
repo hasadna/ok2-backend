@@ -15,19 +15,11 @@ from accounts.serializers import RegistrationSerializer
 def login(request):
     if request.method == 'POST':
         data = json.loads(request.body)
-        print(data)
-
         user = authenticate(
             email=data['email'], password=data['password'])
         if user:
             token = create_token(user.id)
-            return JsonResponse({'token': token,
-                                 'firstName': user.first_name,
-                                 'lastName': user.last_name,
-                                 'email': user.email,
-                                 'isActive': user.is_active,
-                                 'role': user.role,
-                                 })
+            return JsonResponse(user.getUserResponse(token))
         return JsonResponse({'error': 'wrong email or password'}, status=401)
 
 
@@ -53,13 +45,7 @@ def registration_view(request):
         if serializer.is_valid():
             user = serializer.save()
             token = create_token(user.id)
-            return JsonResponse({'token': token,
-                                 'username': user.username,
-                                 'firstName': user.first_name,
-                                 'lastName': user.last_name,
-                                 'email': user.email,
-                                 'isActive': user.is_active,
-                                 }, status=201)
+            return JsonResponse(user.getUserResponse(token), status=201)
         else:
             error = serializer.errors
         return JsonResponse(error, status=400)

@@ -63,3 +63,12 @@ class OkUser(AbstractBaseUser):
     # Does this user have permission to view this app? (ALWAYS YES FOR SIMPLICITY)
     def has_module_perms(self, app_label):
         return True
+
+    def getUserResponse(self, token):
+        return {'token': token,
+                'username': self.username,
+                'firstName': self.first_name,
+                'lastName': self.last_name,
+                'email': self.email,
+                'isActive': self.is_active,
+                }
