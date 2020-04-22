@@ -17,13 +17,13 @@ class LoginSerializer(serializers.ModelSerializer):
 
 class RegistrationSerializer(serializers.ModelSerializer):
 
-    confirmPassword = serializers.CharField(
+    confirm_password = serializers.CharField(
         style={'input_type': 'password'}, write_only=True)
 
     class Meta:
         model = OkUser
         fields = ['email', 'first_name', 'last_name',
-                  'password', 'confirmPassword']
+                  'password', 'confirm_password']
         extra_kwargs = {
             'password': {'write_only': True},
         }
@@ -35,8 +35,8 @@ class RegistrationSerializer(serializers.ModelSerializer):
             username=self.validated_data['email']
         )
         password = self.validated_data['password']
-        confirmPassword = self.validated_data['confirmPassword']
-        if password != confirmPassword:
+        confirm_password = self.validated_data['confirm_password']
+        if password != confirm_password:
             raise serializers.ValidationError(
                 {'password': 'Passwords must match.'})
         user.set_password(password)

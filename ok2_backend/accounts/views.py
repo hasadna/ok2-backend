@@ -3,9 +3,9 @@ import json
 from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
 from django.contrib.auth.models import User
+from django.contrib.auth import authenticate, password_validation
 
 from common.utils import create_token
-from django.contrib.auth import authenticate
 from accounts.models import OkUser
 from accounts.serializers import RegistrationSerializer
 
@@ -37,12 +37,18 @@ def registration_view(request):
         res = {}
         data = json.loads(request.body)
         email = data['email'].lower()
+        password = data['password']
         if validate_email(email) != None:
-            res['error_message'] = 'That email is already in use.'
+            res['error_message'] = 'This email is already in use.'
             res['response'] = 'Error'
-            return JsonResponse(res)
+            return JsonResponse(res, status=400)
+        passValid = validate_password(password)
+        if passValid != None:
+            res['error_message'] = passValid
+            res['response'] = 'Error'
+            return JsonResponse(res, status=400)
 
-        serializer = RegistrationSerializer(data)
+        serializer = RegistrationSerializer(data=data)
 
         if serializer.is_valid():
             user = serializer.save()
@@ -53,10 +59,10 @@ def registration_view(request):
                                  'lastName': user.last_name,
                                  'email': user.email,
                                  'isActive': user.is_active,
-                                 }, status=status.HTTP_201_CREATED)
+                                 }, status=201)
         else:
             error = serializer.errors
-        return JsonResponse(error, status=status.HTTP_400_BAD_REQUEST)
+        return JsonResponse(error, status=400)
 
 
 def validate_email(email):
@@ -67,3 +73,8 @@ def validate_email(email):
         return None
     if user != None:
         return email
+
+
+def validate_password(value):
+    isValid = password_validation.validate_password(value)
+    return isValid
