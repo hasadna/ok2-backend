@@ -1,12 +1,12 @@
 from django.db import models
 
+from takanon.models import Clause
 
 # Create your models here.
-from takanon.models import Takanon
 
-
-class ParliamentTools(models.Model):
+class ParliamentTool(models.Model):
     description = models.TextField()
-    takanon = models.ForeignKey(Takanon, on_delete=models.CASCADE)
+    # TODO: A tool relates to a (non continous) range of rulebook cluases
+    # takanon = models.ForeignKey(Clause, null=True, on_delete=models.SET_NULL)
     # TODO: how to do this? here/another table with more data? calculated or the view?
     # next_date
