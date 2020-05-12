@@ -13,7 +13,9 @@ SECRET_KEY = 'd%_dhqdserzd485_72vh*0y+ywf&^583d!bt41(63tgme=w2&h'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+CORS_ORIGIN_WHITELIST = (
+    'localhost:3000',
+)
 
 
 # Application definition
@@ -28,8 +30,11 @@ INSTALLED_APPS = [
     'common',
     'parliament_tools',
     'one_minute_speeches',
-    'takanon'
+    'takanon',
+    'accounts'
 ]
+
+AUTH_USER_MODEL = 'accounts.OkUser'
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
@@ -42,6 +47,7 @@ MIDDLEWARE = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
     'common.ok2_middleware.OkMiddleware',
 ]
+
 
 ROOT_URLCONF = 'ok2_backend.urls'
 

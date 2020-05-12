@@ -4,6 +4,6 @@ from django.views.generic.base import View
 
 
 
-def check(request):
+def one_minute_speeches(request):
     print(request.user)
-    return HttpResponse('it works')
+    return HttpResponse('one minute speech')

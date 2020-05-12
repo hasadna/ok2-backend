@@ -16,13 +16,14 @@ from django.contrib import admin
 from django.urls import path
 from django.urls import include, path
 
-from one_minute_speeches.views import check
-from accounts.views import login
+from one_minute_speeches.views import one_minute_speeches
+from accounts.views import login, registration_view
 
 api_patterns = [
-    path('/admin', admin.site.urls),
-    path('/login', login),
-    path('', check),
+    path('admin', admin.site.urls),
+    path('login', login),
+    path('register', registration_view),
+    path('one_minute_speeches', one_minute_speeches),
 ]
 
-urlpatterns = [path('api', include(api_patterns))]
+urlpatterns = [path('api/', include(api_patterns))]

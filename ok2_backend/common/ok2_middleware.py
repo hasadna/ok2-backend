@@ -1,8 +1,8 @@
 import os
 
 from django.utils.functional import SimpleLazyObject
-from django.contrib.auth.models import User, AnonymousUser
-
+from django.contrib.auth.models import AnonymousUser
+from django.contrib.auth import get_user_model as user_model
 from common.utils import get_token
 
 
